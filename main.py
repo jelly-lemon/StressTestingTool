@@ -6,6 +6,10 @@ from matplotlib.ticker import MultipleLocator, FormatStrFormatter
 
 
 def draw_line(x_data, y_data, x_label, y_label, title):
+    """
+    单折线图
+    :return:
+    """
     # 图片比例
     plt.figure(figsize=(8, 4.5))
 
@@ -41,9 +45,8 @@ def show_RPS_requests(rps_request_list, concurrency):
     """
     显示在指定并发量下，RPS 与请求数的折线图
 
-    :param rps_request_list:
-    :param concurrency:
-    :return:
+    :param rps_request_list: (rps, requests) 列表
+    :param concurrency: 并发量
     """
     x_data = []
     y_data = []
@@ -58,9 +61,8 @@ def show_RPS_concurrency(rps_ccy_list, requests):
     """
     在指定请求数下，RPS 与 并发数的折线图
 
-    :param rps_ccy_list:
-    :param requests:
-    :return:
+    :param rps_ccy_list: (rps, concurrency) 列表
+    :param requests: 请求数
     """
     x_data = []
     y_data = []
@@ -75,10 +77,9 @@ def show_RPS_poolsize(rps_size_list, requests, concurrency, cpu_logic_cores):
     """
     在指定请求数和并发数下，RPS 与 线程池数量的折线图
 
-    :param rps_size_list:
-    :param requests:
-    :param concurrency:
-    :return:
+    :param rps_size_list: (rps, 线程池大小)
+    :param requests: 请求数
+    :param concurrency: 并发数
     """
     x_data = []
     y_data = []
@@ -94,10 +95,9 @@ def show_RPS_backlog(rps_backlog_list):
     """
     RPS 与 backlog 的折线图
 
-    :param rps_backlog_list:
-    :param requests:
-    :param concurrency:
-    :return:
+    :param rps_backlog_list: (rps, backlog)
+    :param requests: 请求数
+    :param concurrency: 并发数
     """
     x_data = []
     y_data = []
@@ -119,6 +119,7 @@ def run_stress_testing(requests, concurrency, url):
     """
     # 【易错点】路径中有空格时，要加双引号，不能用单引号
     cmd = '"%s" -n%d -c%d %s' % (ab_path, requests, concurrency, url)
+    print(cmd)
     result = os.popen(cmd).read().splitlines()
     for line in result:
         if (line.find("Requests per second") != -1):
@@ -158,8 +159,7 @@ def RPS_concurrency(concurrency_range, requests, url):
     print(rps_list)
     return rps_list
 
-def run_server():
-    server_path = "D:\\0-2-CLion\\MiniWebServer\\cmake-build-debug\\main.exe"
+
 
 def draw_data():
     data = [(200, 293.19), (400, 282.24), (600, 283.37), (800, 281.06), (1000, 281.73), (1200, 282.27), (1400, 274.97), (1600, 265.74), (1800, 275.63), (2000, 280.85), (2200, 279.46), (2400, 268.15), (2600, 278.66), (2800, 273.78), (3000, 279.17)]
@@ -171,10 +171,26 @@ def draw_data():
 
     draw_line(x_data, y_data, x_label="requests", y_label="RPS", title="concurrency=100")
 
+
+
+def test_concurrency():
+    """
+    测试并发数
+    """
+    concurrency_range = (100, 200, 100)
+    requests = 2000
+    rps_list = RPS_concurrency(concurrency_range, requests, url)
+    show_RPS_concurrency(rps_list, requests)
+
+
+# 全局变量
 ab_path = "C:\\Program Files\\httpd-2.4.47-win64-VS16\\Apache24\\bin\\ab.exe"
-os.system("chcp 65001")
+url = "http://127.0.0.1/home.html"
 
 if __name__ == '__main__':
+    # 设置控制台编码为 utf-8
+    os.system("chcp 65001")
+
     # draw_data()
     # exit()
 
@@ -183,7 +199,7 @@ if __name__ == '__main__':
         print(ab_path, "is not exists")
         exit()
 
-    url = "http://127.0.0.1/"
+    test_concurrency()
 
     # 压力测试
     # requests_range = (200, 1000, 200)
@@ -191,8 +207,4 @@ if __name__ == '__main__':
     # rps_list = RPS_requests(requests_range, concurrency, url)
     # show_RPS_requests(rps_list, concurrency)
 
-    # 测试并发数
-    concurrency_range = (100, 1000, 100)
-    requests = 1000
-    rps_list = RPS_concurrency(concurrency_range, requests, url)
-    show_RPS_concurrency(rps_list, requests)
+
