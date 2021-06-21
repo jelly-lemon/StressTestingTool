@@ -8,7 +8,6 @@ from matplotlib.ticker import MultipleLocator, FormatStrFormatter
 def draw_line(x_data, y_data, x_label, y_label, title):
     """
     单折线图
-    :return:
     """
     # 图片比例
     plt.figure(figsize=(8, 4.5))
@@ -147,6 +146,14 @@ def RPS_requests(requests_range, concurrency, url):
     return rps_list
 
 def RPS_concurrency(concurrency_range, requests, url):
+    """
+    指定并发数区间和请求数，进行压力测试
+
+    :param concurrency_range:并发数区间
+    :param requests: 请求数
+    :param url: 请求地址
+    :return: RPS
+    """
     start = concurrency_range[0]
     end = concurrency_range[1]
     step = concurrency_range[2]
@@ -154,9 +161,9 @@ def RPS_concurrency(concurrency_range, requests, url):
     while start <= end:
         rps = run_stress_testing(requests, start, url)
         rps_list.append((start, rps))
+        print(rps_list)
         start += step
 
-    print(rps_list)
     return rps_list
 
 
@@ -177,9 +184,10 @@ def test_concurrency():
     """
     测试并发数
     """
-    concurrency_range = (100, 200, 100)
+    concurrency_range = (100, 1000, 100)
     requests = 2000
     rps_list = RPS_concurrency(concurrency_range, requests, url)
+    print(rps_list)
     show_RPS_concurrency(rps_list, requests)
 
 
